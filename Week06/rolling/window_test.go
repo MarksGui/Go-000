@@ -8,6 +8,6 @@ import (
 
 func Test(t *testing.T) {
 	t1 := time.Now()
-	time.Sleep(100 * time.Millisecond)
-	fmt.Println(int(time.Since(t1) / (3 * time.Millisecond)))
+	time.Sleep(1 * time.Microsecond)
+	fmt.Println(int(time.Since(t1) / (100 * time.Millisecond)))
 }

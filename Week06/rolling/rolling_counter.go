@@ -33,18 +33,20 @@ func NewRollingCounter(window *Window, opts RollingCounterOpts) *RollingPolicy {
 
 // 计算当前时间到最后一次追加时间之间的桶间隔
 func (r *RollingPolicy) timespan() int {
-	v := int(time.Since(r.lastAppendTime) / r.bucketDuration)
+	t1 := time.Since(r.lastAppendTime)
+	v := int(t1 / r.bucketDuration)
 	if v > -1 {
 		return v
 	}
 	return r.size
 }
 
-// 向华东窗口里面添加元素
+// 向滑动窗口里面添加元素
 func (r *RollingPolicy) add(f func(offset int, val float64), val float64) {
 	r.mu.Lock()
 	timespan := r.timespan()
 	if timespan > 0 {
+		// 更新 lastAppendTime 时间
 		r.lastAppendTime = r.lastAppendTime.Add(time.Duration(timespan * int(r.bucketDuration)))
 		offset := r.offset
 		// reset the expired buckets
